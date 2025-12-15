@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>价目表</title>
+  <style>
+    body { font-family: Arial, "Microsoft YaHei", sans-serif; padding: 16px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { position: sticky; top: 0; background: #f7f7f7; }
+  </style>
+</head>
+<body>
+  <h2>价目表</h2>
+  <table id="t"></table>
+
+  <script>
+    async function loadCSV() {
+      const res = await fetch('./pricelist.csv', { cache: 'no-store' });
+      const text = await res.text();
+      const rows = text.trim().split(/\r?\n/).map(r => r.split(','));
+
+      const table = document.getElementById('t');
+      table.innerHTML = '';
+
+      const thead = document.createElement('thead');
+      const trh = document.createElement('tr');
+      rows[0].forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      rows.slice(1).forEach(r => {
+        const tr = document.createElement('tr');
+        r.forEach(c => {
+          const td = document.createElement('td');
+          td.textContent = c;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+    }
+    loadCSV();
+  </script>
+</body>
+</html>
